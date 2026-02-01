@@ -1,20 +1,17 @@
-
-![WhatsApp Image 2025-11-23 at 13 04 23](https://github.com/user-attachments/assets/612da2b2-d786-4b50-9fae-c5a00239b7da)
-
-
-# 🔒 SnarkLab
+# SnarkLab
 
 **Don't let the shine out.**
 
 SnarkLab is the easiest way to transfer assets privately while proving regulatory compliance.
 
----
 
-## 🧾 What is "SnarkLab"?
+
+## What is "SnarkLab"?
 
 SnarkLab is a privacy wallet that lets you transfer assets confidentially on Ethereum while maintaining full regulatory compliance.
 
 Whether you're:
+
 - Protecting your financial privacy
 - Proving transaction legitimacy to regulators
 - Shielding your holdings from surveillance
@@ -23,11 +20,11 @@ Whether you're:
 
 No privacy sacrifice. No regulatory risk. Just transfer assets the way they should be: confidential and compliant.
 
----
 
-## ⚙️ How It Works
 
-### 🔐 Private Balances with TEE Security
+## How It Works
+
+### Private Balances with TEE Security
 
 We use Trusted Execution Environments to keep your funds confidential:
 
@@ -35,7 +32,7 @@ We use Trusted Execution Environments to keep your funds confidential:
 - **Hardware-guaranteed isolation** — protected even from server operators
 - **Efficient computation** — fast transactions without massive gas costs
 
-### 🌳 Sparse Merkle Trees for Scalable Privacy
+### Sparse Merkle Trees for Scalable Privacy
 
 Every private balance is tracked in an optimized Sparse Merkle Tree:
 
@@ -43,17 +40,17 @@ Every private balance is tracked in an optimized Sparse Merkle Tree:
 - **On-chain root** — posted to Ethereum for verifiability
 - **Perfect privacy** — no one can trace your balance or activity
 
-### 🛡️ Zero-Knowledge Compliance Proofs
+### Zero-Knowledge Compliance Proofs
 
 When regulators need verification, generate cryptographic proofs that show:
 
-- ✅ Funds originated from legitimate sources
-- ✅ Transaction amounts comply with legal limits
-- ✅ No transfers to sanctioned addresses
+- Funds originated from legitimate sources
+- Transaction amounts comply with legal limits
+- No transfers to sanctioned addresses
 
 All without revealing your identity, amounts, recipients, or balance.
 
-### 💸 Confidential Transfers
+### Confidential Transfers
 
 Transfer assets with complete privacy:
 

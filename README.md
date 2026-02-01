@@ -4,8 +4,6 @@
 
 SnarkLab is the easiest way to transfer assets privately while proving regulatory compliance.
 
-
-
 ## What is "SnarkLab"?
 
 SnarkLab is a privacy wallet that lets you transfer assets confidentially on Ethereum while maintaining full regulatory compliance.
@@ -19,8 +17,6 @@ Whether you're:
 → SnarkLab gives you **encrypted balances**, tracks everything **in secure hardware**, and lets you **prove compliance** without exposing private data.
 
 No privacy sacrifice. No regulatory risk. Just transfer assets the way they should be: confidential and compliant.
-
-
 
 ## How It Works
 

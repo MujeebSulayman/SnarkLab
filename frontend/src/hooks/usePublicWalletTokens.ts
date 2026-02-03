@@ -172,17 +172,14 @@ export function usePublicWalletTokens() {
     fetchLogos();
   }, [tokenData, isLoadingDetails, discoveredTokens]);
 
-  // Build final token list with all details
+  // Build token list with all details (shared logic)
   const seenAddresses = new Set<string>();
-  const tokens = discoveredTokens
+  const allTokensWithDetails = discoveredTokens
     .map((tokenAddress, index) => {
       const baseIndex = index * 5;
       const lowerAddress = tokenAddress.toLowerCase();
 
-      // Skip duplicates
-      if (seenAddresses.has(lowerAddress)) {
-        return null;
-      }
+      if (seenAddresses.has(lowerAddress)) return null;
       seenAddresses.add(lowerAddress);
 
       if (!tokenData) return null;
@@ -193,16 +190,11 @@ export function usePublicWalletTokens() {
       const allowanceResult = tokenData[baseIndex + 3];
       const nameResult = tokenData[baseIndex + 4];
 
-      // Get balance first to check if we should skip
       const balance =
         balanceResult?.status === "success"
           ? (balanceResult.result as bigint)
           : 0n;
 
-      // Skip tokens with zero balance early
-      if (balance === 0n) return null;
-
-      // Handle missing symbol/decimals gracefully
       let symbol = "UNKNOWN";
       let decimals = 18;
       let name = "Unknown Token";
@@ -224,7 +216,6 @@ export function usePublicWalletTokens() {
           ? (allowanceResult.result as bigint)
           : 0n;
 
-      // Get logo from CoinGecko metadata
       const logo = tokenLogos.get(lowerAddress);
 
       return {
@@ -235,10 +226,16 @@ export function usePublicWalletTokens() {
         allowance,
         formattedBalance: formatTokenBalance(balance, decimals),
         name,
-        logo, // Logo from CoinGecko or undefined (will fallback to getTokenLogoUrl)
+        logo,
       };
     })
     .filter((token) => token !== null) as TokenBalance[];
+
+  // Tokens with balance > 0 (for wallet display)
+  const tokens = allTokensWithDetails.filter((t) => t.balance > 0n);
+
+  // All discovered tokens including 0 balance (for deposit dialog – user can deposit into these)
+  const depositableTokens = allTokensWithDetails;
 
   const refresh = useCallback(() => {
     setRefreshTrigger((prev) => prev + 1);
@@ -246,6 +243,7 @@ export function usePublicWalletTokens() {
 
   return {
     tokens,
+    depositableTokens,
     isLoading: isDiscovering || isLoadingDetails,
     error,
     refresh,

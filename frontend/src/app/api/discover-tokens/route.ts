@@ -41,6 +41,14 @@ export async function GET(request: NextRequest) {
 
     if (!response.ok) {
       const errorText = await response.text();
+      if (response.status === 403 && errorText.includes("not enabled")) {
+        return NextResponse.json({
+          tokens: [
+            "0x036CbD53842c5426634e7929541eC2318f3dCF7e", // USDC
+            "0x808456652fdb597867f38412077A9182bf77359F", // EURC
+          ] as Address[],
+        });
+      }
       throw new Error(
         `Failed to fetch token balances: ${response.status} ${errorText}`
       );

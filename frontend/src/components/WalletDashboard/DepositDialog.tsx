@@ -47,6 +47,7 @@ export function DepositDialog({
 
   const {
     tokens: publicWalletTokens,
+    depositableTokens,
     isLoading: isTokensLoading,
     error: tokensError,
     refresh: refreshTokens,
@@ -58,7 +59,7 @@ export function DepositDialog({
     }
   }, [open, address, refreshTokens]);
 
-  const selectedToken = publicWalletTokens.find(
+  const selectedToken = depositableTokens.find(
     (t) => t.address === selectedTokenAddress
   );
 
@@ -347,7 +348,7 @@ export function DepositDialog({
                         Select Asset
                       </label>
                       <TokenSelector
-                        tokens={publicWalletTokens}
+                        tokens={depositableTokens}
                         selectedTokenAddress={selectedTokenAddress}
                         onSelect={(addr) =>
                           setSelectedTokenAddress(addr as Address)

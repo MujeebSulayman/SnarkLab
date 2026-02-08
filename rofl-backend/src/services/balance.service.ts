@@ -85,7 +85,15 @@ const loadFromDatabase = async (): Promise<void> => {
       continue;
     }
     const key = generateKey(walletAddr, tokenAddr, userSecret);
-    smt.add(key, toHexBalance(balance));
+    const hexBalance = toHexBalance(balance);
+    
+    // Check if key exists and update or add accordingly
+    const exists = smt.get(key);
+    if (exists) {
+      smt.update(key, hexBalance);
+    } else {
+      smt.add(key, hexBalance);
+    }
 
     loadedCount++;
   }
@@ -129,7 +137,15 @@ export const setBalance = async (wallet: string, token: string, balance: string)
   }
 
   const key = generateKey(wallet, token, userSecret);
-  smt.add(key, toHexBalance(balance));
+  const hexBalance = toHexBalance(balance);
+  
+  // Check if key exists and update or add accordingly
+  const exists = smt.get(key);
+  if (exists) {
+    smt.update(key, hexBalance);
+  } else {
+    smt.add(key, hexBalance);
+  }
 
   // Persist to RocksDB
   const dbKey = `balance:${wallet.toLowerCase()}:${token.toLowerCase()}`;

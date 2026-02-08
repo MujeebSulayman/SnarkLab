@@ -83,7 +83,13 @@ const loadTransactionsFromDatabase = async (): Promise<void> => {
     const key = generateTxKey(sender, receiver, token, userSecret);
     const valueHash = hashTransactions(transactions);
 
-    txSmt.add(key, valueHash);
+    // Check if key exists and update or add accordingly
+    const exists = txSmt.get(key);
+    if (exists) {
+      txSmt.update(key, valueHash);
+    } else {
+      txSmt.add(key, valueHash);
+    }
     loadedCount++;
   }
 

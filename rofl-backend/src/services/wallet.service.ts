@@ -5,6 +5,7 @@ import { AppError } from '../api/middlewares/errorHandler';
 import { getBalance, updateBalance, getRoot } from './balance.service';
 import { addTransaction, getTxRoot } from './transaction.service';
 import { hasAllSecrets } from './secret.service';
+import { env } from '../config/env';
 
 const transferSchema = z.object({
   sendTransaction: z.object({
@@ -18,16 +19,13 @@ const transferSchema = z.object({
 
 export class WalletService {
   async transfer(body: TransferRequest): Promise<TransferResult> {
-    // Validate request
     const validated = transferSchema.parse(body);
     const { sendTransaction, signature } = validated;
 
-    // Prevent self-transfers
     if (sendTransaction.from.toLowerCase() === sendTransaction.to.toLowerCase()) {
       throw new AppError('Cannot transfer to yourself', 400);
     }
 
-    // Verify signature
     const message = JSON.stringify(sendTransaction);
     const result = await verifyWalletSignature({
       walletAddress: sendTransaction.from,
@@ -39,18 +37,18 @@ export class WalletService {
       throw new AppError(result.error || 'Invalid signature', 401);
     }
 
-    // Check both parties have set their secrets
     const senderHasSecrets = await hasAllSecrets(sendTransaction.from);
-    const receiverHasSecrets = await hasAllSecrets(sendTransaction.to);
 
     if (!senderHasSecrets) {
       throw new AppError('Sender has not set all required secrets', 400);
     }
-    if (!receiverHasSecrets) {
+
+    const receiverHasSecrets = await hasAllSecrets(sendTransaction.to);
+    
+    if (!env.SKIP_RECEIVER_SECRET_CHECK && !receiverHasSecrets) {
       throw new AppError('Receiver has not set all required secrets', 400);
     }
 
-    // Check sender balance (using human-readable decimals)
     const senderBalance = await getBalance(sendTransaction.from, sendTransaction.token);
     const amount = parseFloat(sendTransaction.amount);
     const currentBalance = parseFloat(senderBalance);
@@ -59,24 +57,24 @@ export class WalletService {
       throw new AppError('Insufficient balance', 400);
     }
 
-    // Execute transfer
     const newSenderBalance = (currentBalance - amount).toString();
-    const receiverBalance = await getBalance(sendTransaction.to, sendTransaction.token);
-    const newReceiverBalance = (parseFloat(receiverBalance) + amount).toString();
-
-    // Update balances in Balance SMT
     await updateBalance(sendTransaction.from, sendTransaction.token, newSenderBalance);
-    await updateBalance(sendTransaction.to, sendTransaction.token, newReceiverBalance);
 
-    // Add transaction to Transaction SMT (creates 2 leaves)
-    await addTransaction(
-      sendTransaction.from,
-      sendTransaction.to,
-      sendTransaction.token,
-      sendTransaction.amount
-    );
+    if (receiverHasSecrets) {
+      const receiverBalance = await getBalance(sendTransaction.to, sendTransaction.token);
+      const newReceiverBalance = (parseFloat(receiverBalance) + amount).toString();
+      await updateBalance(sendTransaction.to, sendTransaction.token, newReceiverBalance);
+    }
 
-    // Generate tx hash from balance SMT root
+    if (receiverHasSecrets) {
+      await addTransaction(
+        sendTransaction.from,
+        sendTransaction.to,
+        sendTransaction.token,
+        sendTransaction.amount
+      );
+    }
+
     const txHash = getRoot();
 
     return {

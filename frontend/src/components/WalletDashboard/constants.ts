@@ -32,8 +32,6 @@ export const SUPPORTED_TOKENS: SupportedToken[] = [
 
 export const VOID_CONTRACT_ADDRESS = process.env
 	.NEXT_PUBLIC_VOID_CONTRACT_ADDRESS as Address;
-
-// Cloak contract ABI (Void.sol)
 export const VOID_CONTRACT_ABI = [
 	{
 		inputs: [

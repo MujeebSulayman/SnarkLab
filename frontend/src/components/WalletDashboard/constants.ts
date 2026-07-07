@@ -1,8 +1,6 @@
 import { type Address } from "viem";
 import { SupportedToken } from "./types";
 
-// Known token addresses on Base Sepolia
-// Metadata (symbol, name, decimals, logo) will be fetched from Alchemy API
 export const SUPPORTED_TOKENS: SupportedToken[] = [
   {
     id: "eth",
@@ -14,7 +12,7 @@ export const SUPPORTED_TOKENS: SupportedToken[] = [
   },
   {
     id: "usdc",
-    symbol: "USDC", // Will be overridden by API data
+    symbol: "USDC",
     name: "USD Coin",
     type: "erc20",
     decimals: 6,

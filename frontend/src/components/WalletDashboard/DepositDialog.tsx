@@ -159,7 +159,7 @@ export function DepositDialog({
     }
   };
 
-  
+
   const handleDeposit = async () => {
     if (!selectedToken || !depositAmount) {
       setError("Lütfen token ve miktar seçin");
